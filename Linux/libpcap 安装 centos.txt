@@ -1,0 +1,159 @@
+CentOS安装libpcap
+1.安装GCC：
+  yum -y install gcc-c++
+
+2.安装flex： 
+  yum -y install flex 
+  没有flex，直接安装libpcap会提示"Your operating system's lex is insufficient to compile libpcap"错误；
+
+3.安装bison
+  yum -y install bison
+  前面安装的是flex，就需要搭配bison，如不会提示"don't have both flex and bison;reverting to lex/yacc"错误；
+
+4.安装 libpcap
+  下载地址：http://www.tcpdump.org/
+  下载版本：wget -c http://www.tcpdump.org/release/libpcap-1.5.3.tar.gz
+
+   解压软件包：tar zxf libpcap-1.0.0.tar.gz
+
+  进入解压后的目录，输入命令行：
+   命令如下：
+   ./configure
+   make
+   make install
+
+5.简单的例子测试一下libpcap：
+  //device.c 
+  #include <stdio.h>
+  #include <pcap.h>
+  int main(int argc,char *argv[]){
+      char *dev, errbuf[PCAP_ERRBUF_SIZE];
+      dev=pcap_lookupdev(errbuf);
+      if(dev==NULL){
+         fprintf(stderr,"couldn't find default device: %s\n",errbuf);
+         return(2);
+      }
+      printf("Device: %s\n",dev);
+      return(0);
+  }
+
+  编译指令：gcc -o device device.c -lpcap
+  备注：编译时要使用libpcap的参数-lpcap，否则会提示“pcap_lookupdev 未定义的引用”的错误；
+  运行指令：./device
+
+转载：http://www.tcpdump.org/release/libpcap-1.5.3.tar.gz
+
+http://blog.sina.com.cn/s/blog_6f289b0e01014jst.html
+
+运行遇到错误解决办法：
+
+error while loading shared libraries: libpcap.so.1: cannot open shared object file: No such file or
+
+ 
+
+//-----------------------------------------------------------
+
+//AUTHOR:lanyang123456
+
+//DATE:2011-11-10
+
+//-----------------------------------------------------------
+
+ 
+
+Linux系统下，运行sniff程序需要libpcap库。
+
+首先下载安装该库，下载地址: http://www.tcpdump.org/
+
+点击DOWNLOADS
+
+ 
+
+下载后
+
+(1)解压
+
+(2)进入解压后文件目录， ./configure
+
+(3)make install
+
+默认安装目录/usr/local/lib
+
+ 
+
+编译sniff程序通过，运行sniff程序时，出现如下错误：
+
+./sn: error while loadingshared libraries: libpcap.so.1: cannot open shared object file: No such file ordirectory
+
+ 
+
+由于libpcap已经安装，所以是程序无法找到库所在的位置的原因。
+
+解决办法：
+
+将libpcap.so.1所在目录添加到文件/etc/ld.so.conf中，
+
+打开ld.so.conf文件，然后添加一行/usr/local/lib：
+
+includeld.so.conf.d/*.conf //原来的内容
+
+/usr/local/lib
+
+然后保存，再终端下执行 ldconfig。
+
+再运行sniff程序，OK。 
+
+有时用tar解压文件.错误如下:
+
+gzip: stdin: unexpectedend of file tar: Unexpected EOF in archive tar: Unexpected EOF in archive tar:Error is not recoverable: exiting now
+
+原因:
+
+文件被破坏,重新下载。
+
+转载：http://blog.csdn.net/lanyang123456/article/details/6956093
+
+ 
+
+libnet.so.1: cannot open shared object file: No such file or directory  
+
+安装了libnet
+./configure
+make
+make install 
+程序编译正确，但是执行的时候出现如下问题
+libnet.so.1: cannot open shared object file: No such file or directory  
+这种问题经常出现，原因是程序执行时寻找的是/usr/lib下的库，而libnet默认安装到了/usr/local/lib
+解决方法：
+
+1.将所有文件/usr/local/lib的所有文件拷贝到/usr/lib下，应该可以，没有尝试。
+2.vim /etc/ld.so.conf.d/ld.libnet.so.conf
+添加 /usr/local/lib
+退出保存
+ldconfig
+然后在执行程序。ok。
+参考http://www.2cto.com/os/201306/222628.html
+ 
+cannot open shared object file: No such file or directory解决
+ 
+./move_db: error while loading shared libraries: libmysqlclient.so.15: cannot 
+open shared object file: No such file or directory 
+ 
+第一步：确认有哪些Lib无法Load 
+>ldd move_db 
+linux-gate.so.1 => (0x0089c000) 
+libmysqlclient.so.15 => not found 
+libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x00cfa000) 
+libm.so.6 => /lib/libm.so.6 (0x00804000) 
+libgcc_s.so.1 => /lib/libgcc_s.so.1 (0x009f8000) 
+libc.so.6 => /lib/libc.so.6 (0x0069e000) 
+/lib/ld-linux.so.2 (0x0067b000) 
+ 
+第二步：系统要确认动态库的地址，把动态库的路径放到/etc/ld.so.conf中 
+建议：在/etc/ld.so.conf.d/上新建动态库相应的文件配置文件*.conf， 
+在该文件中填上该动态库的绝对路径 
+此例： 
+vim /etc/ld.so.conf.d/ld.mysql.so.conf 
+/usr/local/mysql/lib 
+ 
+第三步：运行ldconfig   重建/etc/ld.so.cache
