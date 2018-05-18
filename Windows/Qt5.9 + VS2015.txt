@@ -1,1 +1,20 @@
-参考：https://blog.csdn.net/weixin_38215395/article/details/78146595?locationNum=3&fps=1
+
+Qt下载地址：https://www1.qt.io/offline-installers/
+            https://download.qt.io/official_releases/
+
+1、QT5.9.1: 安装时，记得把“msvc2015”和“msvc2015_64”安装上
+
+2、VS2015 ：安装时，一定要选择“visual c++”选项
+
+3、Qt VS Tools: 当安装完VS2015后，接下来安装Vs集成Qt的工具“Qt VS Tools”。 
+打开VS2015后，在工具栏找到“工具（T）”，在“工具”子菜单栏找到“扩展和更新（U）…”并打开。点击“联机”，
+在右边搜索框中输入“Qt”,会出现下图所示的搜素结果。可以安装第一个“Qt VS Tools”和第三个“QtPackage”（只安装一个就行） 
+
+4、当安装完“Qt VS Tools”后，重启VS2015后，会发现在工具栏多了一个“Qt VS Tools”（安装了“Qt VS Tools”）或“QT5”（安装了QtPackage）工具。
+这两个工具接下来的操作基本相同。下面以“Qt VS Tools”为例进行说明。点击“Qt VS Tools”中的“Qt Options”选项，在“Qt Versions”中，
+点击“Add”，在弹出的对话框中（如下图所示），分别添加Qt5.9.1中“msvc2015”和“msvc2015_64”的安装位置，保存即可。
+
+5、在完成上述操作后，还需要将Qt5.9.1和VS2015的编译器位置添加到系统变量的“Path”中。 
+打开“控制面板”->“系统和安全”->“系统”中的“高级系统设置”，点击“环境变量”，在“系统变量”中找到“Path”并打开。
+分别将VS2015安装目录下的“VS2015安装根目录\VC\bin”和QT5.9.1安装目录下的“Qt5.9.1安装根目录\msvc2015\bin”（32位）
+及“Qt5.9.1安装根目录\msvc2015_64\bin”（64位）添加到Path中。
